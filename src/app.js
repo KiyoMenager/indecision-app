@@ -1,10 +1,25 @@
 class IndecisionApp extends React.Component {
   constructor(props) {
     super(props);
+    this.handleDeleteOptions = this.handleDeleteOptions.bind(this);
+    this.handlePick = this.handlePick.bind(this);
     this.state = {
       options: ["a", "b", "c"]
     }
+  }
 
+  handleDeleteOptions() {
+    this.setState(() => {
+      return {
+        options: []
+      };
+    });
+  }
+
+  handlePick() {
+    const randomNum = Math.floor(Math.random() * this.state.options.length);
+    const option = this.state.options[randomNum];
+    alert(option);
   }
 
   render() {
@@ -13,8 +28,15 @@ class IndecisionApp extends React.Component {
 
     return (
       <div>
-        <Action hasOptions={this.state.options.length > 0}/>
-        <Options options={this.state.options}/>
+        <Header title={title} subtitle={subtitle} />
+        <Action
+          hasOptions={this.state.options.length > 0}
+          handlePick={this.handlePick}
+        />
+        <Options
+          options={this.state.options}
+          handleDeleteOptions={this.handleDeleteOptions}
+        />
         <AddOption />
       </div>
     );
@@ -33,14 +55,11 @@ class Header extends React.Component {
 }
 
 class Action extends React.Component {
-  handlePick() {
-    alert('handlePick')
-  }
   render() {
     return (
       <div>
         <button
-          onClick={this.handlePick}
+          onClick={this.props.handlePick}
           disabled={!this.props.hasOptions}
         >
           What should I do?
@@ -63,7 +82,7 @@ class Options extends React.Component {
   render() {
     return (
       <div>
-        <button onClick={this.handleRemoveAll}>Remove All</button>
+        <button onClick={this.props.handleDeleteOptions}>Remove All</button>
         <ol>
           {
             this.props.options.map((option) => <Option key={option} optionText={option} />)
